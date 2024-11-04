@@ -13,15 +13,15 @@ export default function Login() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Redirect to appropriate home page if user is already logged in
+    // Check if a user is already logged in and redirect accordingly
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     const userType = localStorage.getItem('loggedInUserType');
     if (loggedInUser) {
-    //   if (userType === 'admin') {
-    //     navigate('/admin-home', { replace: true });
-    //   } else {
-    //     navigate('/user-home', { replace: true });
-    //   }
+      if (userType === 'admin') {
+        navigate('/admin-home', { replace: true });
+      } else {
+        navigate('/user-home', { replace: true });
+      }
     }
   }, [navigate]);
 
@@ -40,11 +40,13 @@ export default function Login() {
         localStorage.setItem('loggedInUserType', 'admin');
         dispatch(setLoginStatus(storedUser));
         navigate('/admin-home', { replace: true });
+        window.history.pushState(null, '', window.location.href); // Prevent going back
       } else if (userType === 'user' && !storedUser.isAdmin) {
         localStorage.setItem('loggedInUser', JSON.stringify(storedUser));
         localStorage.setItem('loggedInUserType', 'user');
         dispatch(setLoginStatus(storedUser));
         navigate('/user-home', { replace: true });
+        window.history.pushState(null, '', window.location.href); // Prevent going back
       } else {
         setError('Invalid credentials or unique code for admin.');
       }
